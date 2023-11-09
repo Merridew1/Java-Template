@@ -57,8 +57,8 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        driver.a().onTrue(Commands.runEnd(() -> arm.intake(), () -> arm.stop(), arm));
-        driver.b().onTrue(Commands.runEnd(() -> arm.dispense(), () -> arm.stop(), arm));
+        driver.a().whileTrue(Commands.runEnd(() -> arm.intake(), () -> arm.stop(), arm));
+        driver.b().whileTrue(Commands.runEnd(() -> arm.dispense(), () -> arm.stop(), arm));
 
     }
 
