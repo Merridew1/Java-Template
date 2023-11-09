@@ -5,8 +5,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Drive;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.arms;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -16,8 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public class RobotContainer {
     /* Controllers */
+    private Drivetrain drivetrain = new Drivetrain();
+
     private final CommandXboxController driver = new CommandXboxController(Constants.driverID);
     private final CommandXboxController operator = new CommandXboxController(Constants.operatorID);
+
+    arms arm = new arms();
+
 
     // Initialize AutoChooser Sendable
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -33,6 +43,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        drivetrain.setDefaultCommand(new Drive(drivetrain, driver));
         SmartDashboard.putData("Choose Auto: ", autoChooser);
         autoChooser.setDefaultOption("Do Nothing", new WaitCommand(1));
         // Configure the button bindings
@@ -45,7 +56,11 @@ public class RobotContainer {
      * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {}
+    private void configureButtonBindings() {
+        driver.a().onTrue(Commands.runEnd(() -> arm.intake(), () -> arm.stop(), arm));
+        driver.b().onTrue(Commands.runEnd(() -> arm.dispense(), () -> arm.stop(), arm));
+
+    }
 
     /**
      * Gets the user's selected autonomous command.
